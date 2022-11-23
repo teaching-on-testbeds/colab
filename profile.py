@@ -49,7 +49,7 @@ pc = portal.Context()
 # Create a Request object to start building the RSpec.
 request = pc.makeRequestRSpec()
 
-osImage = "urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD"
+osImage = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS8-64-STD"
 
 #    'c240g5', 'c240g5',  # 32 at Wisconsin
 #    'c4130', 'c4130',    # 2 at Wisconsin, 2 at Clemson
