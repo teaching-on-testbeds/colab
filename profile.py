@@ -108,7 +108,7 @@ if params.osImage[1]=='UBUNTU 20.04':
 tour = ig.Tour()
 tour.Description(ig.Tour.TEXT,tourDescription)
 tour.Instructions(ig.Tour.MARKDOWN,tourInstructions)
-pg.addTour(tour)
+request.addTour(tour)
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)
