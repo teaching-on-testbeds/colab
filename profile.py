@@ -70,12 +70,46 @@ pc.verifyParameters()
 
 ubuntuInstructions = """
 
-After the automated install process is complete (you should see a check mark in the corner of the node), open a shell and run:
+After the automated install process is complete (you should see a check mark in the corner of the node), reboot the node to load the newly installed driver.
+
+When it comes back up, open a shell and install Python libraries:
 
 ```
-python3-m pip install --user Cython==0.29.32
+python3 -m pip install --user Cython==0.29.32
 python3 -m pip install --user -r /local/repository/requirements_cloudlab_dl.txt --extra-index-url https://download.pytorch.org/whl/cu113 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+python3 -m pip install --user  jupyter-core jupyter-client jupyter_http_over_ws traitlets -U --force-reinstall
+```
+
+Then, start the notebook server:
+
+```
+sudo chown $USER /data
+PATH="$HOME/.local/bin:$PATH"
+jupyter serverextension enable --py jupyter_http_over_ws
+jupyter notebook --notebook-dir=/data --NotebookApp.allow_origin='https://colab.research.google.com' --port=8888 --NotebookApp.port_retries=0
+```
+
+In the output, look for a URL in this format:
+    
+```
+http://localhost:8888/?token=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+and copy it.
+
+Then, from List View, get the SSH login details for the server. In a local terminal, run:
+
+```
+ssh -L 127.0.0.1:8888:127.0.0.1:8888 ffund00@c240g5-110217.wisc.cloudlab.us
+```
+
+(substituting your SSH login for the last part!) Leave this SSH session open.
+
+Now, you can open Colab in a browser. Click on the drop-down menu for "Connect" in the top right and select "Connect to a local runtime". Past the URL into the space and click "Connect".
+
 """
+
+centosInstructions = ubuntuInstructions
 
 tourDescription = """
 This experiment is for connecting Google Colab to a server running on NSF-supported cloud computing infrastructure.
@@ -99,10 +133,15 @@ if params.tempFileSystemSize > 0 or params.tempFileSystemMax:
       bs.size = str(params.tempFileSystemSize) + "GB"
     bs.placement = "any"
 
-tourInstructions = ubuntuInstructions
-if params.osImage[1]=='UBUNTU 20.04':
+
+if params.osImage and params.osImage.endswith('UBUNTU20-64-STD'):
     node.addService(pg.Execute(shell="bash", command="/local/repository/cloudlab-ubuntu-install.sh"))
     tourInstructions = ubuntuInstructions
+elif params.osImage and params.osImage.endswith('CENTOS8S-64-STD'):
+    node.addService(pg.Execute(shell="bash", command="/local/repository/cloudlab-centos-install.sh"))
+    tourInstructions = centosInstructions
+else:
+  tourInstructions = ""
 
 
 tour = ig.Tour()
