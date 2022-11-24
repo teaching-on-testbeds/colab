@@ -99,6 +99,7 @@ if params.tempFileSystemSize > 0 or params.tempFileSystemMax:
       bs.size = str(params.tempFileSystemSize) + "GB"
     bs.placement = "any"
 
+tourInstructions = ubuntuInstructions
 if params.osImage[1]=='UBUNTU 20.04':
     node.addService(pg.Execute(shell="bash", command="/local/repository/cloudlab-ubuntu-install.sh"))
     tourInstructions = ubuntuInstructions
