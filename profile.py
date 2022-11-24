@@ -1,47 +1,12 @@
-"""This experiment is for connecting Google Colab to a server running on NSF-supported cloud computing infrastructure. 
-
-This allows you to run experiments requiring bare metal access, storage, memory, GPU and compute that exceeds the abilities of Colab's hosted runtime, but with Colab's familiar interface (and notebooks stored in your Google Drive). It also allows you to easily go back and forth between the convenience of Colab's hosted runtime and Chameleon or CloudLab's greater capabilities, as you develop your experiment.
-
-Instructions:
-Wait for the experiment to start, and open a shell on the server. Run:
-
-```
-sudo apt update; sudo apt -y install python3-dev jupyter-core jupyter-client python3-pip
-```
-
-and
-
-```
-python3 -m pip install --user jupyter-core jupyter-client jupyter_http_over_ws traitlets -U --force-reinstall
-```
-
-Then start the Jupyter server with
-
-```
-PATH="$HOME/.local/bin:$PATH"
-jupyter serverextension enable --py jupyter_http_over_ws
-jupyter notebook --NotebookApp.allow_origin='https://colab.research.google.com' --port=8888 --NotebookApp.port_retries=0
-```
-
-Leave this running, and copy the URL that includes the word "localhost" in it from the output of this command.
-
-Then, from List View, get the SSH login details for the server. In a **local** terminal, run:
-
-```
-ssh -L 127.0.0.1:8888:127.0.0.1:8888 ffund00@c240g5-110217.wisc.cloudlab.us
-```
-
-(substituting your SSH login for the last part!) Leave this SSH session open.
-
-Now, you can open Colab in a browser. Click on the drop-down menu for "Connect" in the top right and select "Connect to a local runtime".  Past the URL into the space and click "Connect".
-"""
-
 # Import the Portal object.
 import geni.portal as portal
 # Import the ProtoGENI library.
 import geni.rspec.pg as pg
 # Emulab specific extensions.
 import geni.rspec.emulab as emulab
+# for tour, instructions
+import geni.rspec.igext as ig
+
 
 # Create a portal context, needed to defined parameters
 pc = portal.Context()
@@ -50,6 +15,16 @@ pc = portal.Context()
 request = pc.makeRequestRSpec()
 
 osImage = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS8S-64-STD"
+
+# Pick your OS.
+imageList = [
+    ('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD', 'UBUNTU 20.04'),
+    ('urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS8S-64-STD',  'CENTOS 8 Stream')]
+
+pc.defineParameter("osImage", "Select OS image",
+                   portal.ParameterType.IMAGE,
+                   imageList[0], imageList,
+                   longDescription="Select a disk image.")
 
 #    'c240g5', 'c240g5',  # 32 at Wisconsin
 #    'c4130', 'c4130',    # 2 at Wisconsin, 2 at Clemson
@@ -80,7 +55,7 @@ pc.defineParameter("tempFileSystemMax",  "Temp Filesystem Max Space",
                     "check this box to allocate all available disk space. Leave the size above as zero.")
 
 pc.defineParameter("tempFileSystemMount", "Temporary Filesystem Mount Point",
-                   portal.ParameterType.STRING,"/mydata",advanced=True,
+                   portal.ParameterType.STRING,"/data",advanced=True,
                    longDescription="Mount the temporary file system at this mount point; in general you " +
                    "you do not need to change this, but we provide the option just in case your software " +
                    "is finicky.")
@@ -95,8 +70,23 @@ if params.tempFileSystemSize < 0 or params.tempFileSystemSize > 200:
 
 pc.verifyParameters()
 
+ubuntuInstructions = """
+
+After the automated install process is complete (you should see a check mark in the corner of the node), open a shell and run:
+
+```
+python3-m pip install --user Cython==0.29.32
+python3 -m pip install --user -r /local/repository/requirements_cloudlab_dl.txt --extra-index-url https://download.pytorch.org/whl/cu113 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+"""
+
+tourDescription = """
+This experiment is for connecting Google Colab to a server running on NSF-supported cloud computing infrastructure.
+
+This allows you to run experiments requiring bare metal access, storage, memory, GPU and compute that exceeds the abilities of Colab's hosted runtime, but with Colab's familiar interface (and notebooks stored in your Google Drive). It also allows you to easily go back and forth between the convenience of Colab's hosted runtime and Chameleon or CloudLab's greater capabilities, as you develop your experiment.
+"""
+
 node = request.RawPC('colab')
-node.disk_image = osImage
+node.disk_image = params.osImage
 
 # Optional hardware type.
 if params.phystype != "":
@@ -111,7 +101,15 @@ if params.tempFileSystemSize > 0 or params.tempFileSystemMax:
       bs.size = str(params.tempFileSystemSize) + "GB"
     bs.placement = "any"
 
+if params.osImage[1]=='UBUNTU 20.04':
+    node.addService(pg.Execute(shell="bash", command="/local/repository/cloudlab-ubuntu-install.sh"))
+    tourInstructions = ubuntuInstructions
 
+
+tour = ig.Tour()
+tour.Description(ig.Tour.TEXT,tourDescription)
+tour.Instructions(ig.Tour.MARKDOWN,tourInstructions)
+pg.addTour(tour)
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)
