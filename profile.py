@@ -14,8 +14,6 @@ pc = portal.Context()
 # Create a Request object to start building the RSpec.
 request = pc.makeRequestRSpec()
 
-osImage = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS8S-64-STD"
-
 # Pick your OS.
 imageList = [
     ('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD', 'UBUNTU 20.04'),
