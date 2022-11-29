@@ -135,10 +135,10 @@ if params.tempFileSystemSize > 0 or params.tempFileSystemMax:
 
 
 if params.osImage and params.osImage.endswith('UBUNTU20-64-STD'):
-    node.addService(pg.Execute(shell="bash", command="/local/repository/cloudlab-ubuntu-install.sh"))
+    node.addService(pg.Execute(shell="bash", command="/bin/bash /local/repository/cloudlab-ubuntu-install.sh"))
     tourInstructions = ubuntuInstructions
 elif params.osImage and params.osImage.endswith('CENTOS8S-64-STD'):
-    node.addService(pg.Execute(shell="bash", command="/local/repository/cloudlab-centos-install.sh"))
+    node.addService(pg.Execute(shell="bash", command="/bin/bash /local/repository/cloudlab-centos-install.sh"))
     tourInstructions = centosInstructions
 else:
   tourInstructions = ""
