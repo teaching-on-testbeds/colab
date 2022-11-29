@@ -1,6 +1,6 @@
 #!/bin/bash
 
-
+# only on first boot
 if ! command -v nvcc &> /dev/null
 then
 
@@ -21,5 +21,13 @@ then
     sudo apt-get clean
 
     echo 'PATH="/usr/local/cuda-11.8/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"' | sudo tee /etc/environment
+    
+    sudo apt clean
+    sudo chown $USER /data
+    mkdir -p /data/tmp
+    TMPDIR=/data/tmp python3 -m pip install --cache-dir=/data/tmp --target=/data Cython==0.29.32
+    TMPDIR=/data/tmp python3 -m pip install --cache-dir=/data/tmp --target=/data -r /local/repository/requirements_cloudlab_dl.txt --extra-index-url https://download.pytorch.org/whl/cu113 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+    TMPDIR=/data/tmp python3 -m pip install --cache-dir=/data/tmp --target=/data jupyter-core jupyter-client jupyter_http_over_ws traitlets -U --force-reinstall
+
 fi
 

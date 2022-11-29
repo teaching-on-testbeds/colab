@@ -70,23 +70,30 @@ pc.verifyParameters()
 
 ubuntuInstructions = """
 
-After the automated install process is complete (you should see a check mark in the corner of the node), reboot the node to load the newly installed driver.
-
-When it comes back up, open a shell and install Python libraries:
+After the automated install process is complete (you should see a check mark in the corner of the node), reboot the node to load the newly installed driver:
 
 ```
-python3 -m pip install --user Cython==0.29.32
-python3 -m pip install --user -r /local/repository/requirements_cloudlab_dl.txt --extra-index-url https://download.pytorch.org/whl/cu113 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
-python3 -m pip install --user  jupyter-core jupyter-client jupyter_http_over_ws traitlets -U --force-reinstall
+sudo reboot
 ```
+
+Wait for the resource to come back up.
+
+You can install any additional Python packages, but use e.g.
+
+```
+TMPDIR=/data/tmp python3 -m pip install --cache-dir=/data/tmp --target=/data XXX
+```
+
+to install a package named `XXX` - there is not enough disk space on the root filesystem.
 
 Then, start the notebook server:
 
 ```
 sudo chown $USER /data
-PATH="$HOME/.local/bin:$PATH"
-jupyter serverextension enable --py jupyter_http_over_ws
-jupyter notebook --notebook-dir=/data --NotebookApp.allow_origin='https://colab.research.google.com' --port=8888 --NotebookApp.port_retries=0
+PATH="/data/bin:$PATH"
+cd /data
+PYTHONPATH=/data jupyter serverextension enable --py jupyter_http_over_ws
+PYTHONPATH=/data jupyter notebook --notebook-dir=/data --NotebookApp.allow_origin='https://colab.research.google.com' --port=8888 --NotebookApp.port_retries=0
 ```
 
 In the output, look for a URL in this format:
