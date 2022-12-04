@@ -114,7 +114,7 @@ and copy it.
 Then, from List View, get the SSH login details for the server. In a local terminal, run:
 
 ```
-ssh -L 127.0.0.1:8888:127.0.0.1:8888 ffund00@c240g5-110217.wisc.cloudlab.us
+ssh -L 127.0.0.1:8888:127.0.0.1:8888 ffund00@{host-colab}
 ```
 
 (substituting your SSH login for the last part!) Leave this SSH session open.
