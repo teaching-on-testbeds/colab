@@ -4,6 +4,8 @@
 if ! command -v nvcc &> /dev/null
 then
 
+    sudo ln -s /dev/null /etc/systemd/system/NetworkManager.service
+
     sudo apt update
     sudo apt -y install python3-pip python3-dev
     sudo pip3 install --upgrade pip
@@ -22,7 +24,6 @@ then
 
     echo 'PATH="/usr/local/cuda-11.8/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"' | sudo tee /etc/environment
     
-    sudo apt clean
     sudo chown $USER /data
     mkdir -p /data/tmp
     TMPDIR=/data/tmp python3 -m pip install --cache-dir=/data/tmp --target=/data Cython==0.29.32
