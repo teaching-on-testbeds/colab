@@ -78,7 +78,15 @@ sudo reboot
 
 Wait for the resource to come back up.
 
-You can install any additional Python packages, but use e.g.
+This host has a large filesystem available at `/data` - run
+
+```
+sudo chown $USER /data
+```
+
+so that you will be able to write to this filesystem. 
+
+You can then install any additional Python packages, but use e.g.
 
 ```
 TMPDIR=/data/tmp python3 -m pip install --cache-dir=/data/tmp --target=/data XXX
@@ -89,7 +97,6 @@ to install a package named `XXX` - there is not enough disk space on the root fi
 Then, start the notebook server:
 
 ```
-sudo chown $USER /data
 PATH="/data/bin:$PATH"
 cd /data
 PYTHONPATH=/data jupyter serverextension enable --py jupyter_http_over_ws
