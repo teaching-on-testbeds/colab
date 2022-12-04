@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
 # only on first boot
 if ! command -v nvcc &> /dev/null
 then
