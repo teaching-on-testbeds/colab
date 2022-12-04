@@ -3,9 +3,6 @@
 # only on first boot
 if ! command -v nvcc &> /dev/null
 then
-
-    sudo ln -s /dev/null /etc/systemd/system/NetworkManager.service
-
     sudo apt update
     sudo apt -y install python3-pip python3-dev
     sudo pip3 install --upgrade pip
