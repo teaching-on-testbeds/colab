@@ -3,6 +3,10 @@
 # only on first boot
 if ! command -v nvcc &> /dev/null
 then
+
+    sudo bash -c "echo blacklist nouveau > /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
+    sudo bash -c "echo options nouveau modeset=0 >> /etc/modprobe.d/blacklist-nvidia-nouveau.conf"
+	
     sudo apt update
     sudo apt -y install python3-pip python3-dev
     sudo pip3 install --upgrade pip
