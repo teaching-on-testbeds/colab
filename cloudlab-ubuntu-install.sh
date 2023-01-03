@@ -18,7 +18,7 @@ then
     sudo apt update
     sudo apt-get clean
     sudo apt -y install linux-headers-$(uname -r)
-    sudo apt -y install cuda
+    sudo apt -y install cuda-11-8
     sudo apt-get clean
     sudo apt -y install nvidia-gds
     sudo apt-get clean
