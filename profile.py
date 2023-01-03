@@ -117,7 +117,7 @@ Then, from List View, get the SSH login details for the server. In a local termi
 ssh -L 127.0.0.1:8888:127.0.0.1:8888 USER@{host-colab}
 ```
 
-(substituting your CloudLab username in place of `USER`! Also specify your key path, if it is not in the default location.) Leave this SSH session open.
+(substituting your CloudLab username in place of `USER`! Also specify your key path using `-i`, if it is not in the default location.) Leave this SSH session open.
 
 Now, you can open Colab in a browser. Click on the drop-down menu for "Connect" in the top right and select "Connect to a local runtime". Past the URL into the space and click "Connect".
 
