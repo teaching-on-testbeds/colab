@@ -18,11 +18,14 @@ then
     sudo apt update
     sudo apt-get clean
     sudo apt -y install linux-headers-$(uname -r)
-    sudo apt -y install cuda-11-8
+    sudo apt-mark hold cuda-toolkit-12-config-common nvidia-driver-535 # don't allow these
+    sudo apt -y install nvidia-driver-520
     sudo apt-get clean
-    sudo apt -y install nvidia-gds
+    sudo apt -y install cuda-11-8 cuda-runtime-11-8 cuda-drivers=520.61.05-1
     sudo apt-get clean
-    sudo apt -y install libcudnn8
+    sudo apt -y install nvidia-gds-11-8
+    sudo apt-get clean
+    sudo apt -y install libcudnn8=8.9.3.28-1+cuda11.8 nvidia-cuda-toolkit
     sudo apt-get clean
 
     echo 'PATH="/usr/local/cuda-11.8/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"' | sudo tee /etc/environment
