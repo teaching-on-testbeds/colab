@@ -28,4 +28,5 @@ torchaudio==2.1.0+cu118
 torchdata==0.7.0
 torchsummary==1.5.1
 torchtext==0.16.0
-torchaudio==0.16.0+cu118
+torchvision==0.16.0+cu118
+tqdm==4.66.1

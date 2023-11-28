@@ -145,9 +145,22 @@ sudo chown $USER /data
 
 so that you will be able to write to this filesystem. 
 
+Next, install Python packages:
+
+```
+mkdir -p /data/tmp
+sudo chown $USER -R /data
+
+TMPDIR=/data/tmp python3 -m pip install --user --cache-dir=/data/tmp Cython==3.0.5
+TMPDIR=/data/tmp python3 -m pip install --user --cache-dir=/data/tmp -r /local/repository/requirements_cloudlab_dl22.txt --extra-index-url https://download.pytorch.org/whl/cu118 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+TMPDIR=/data/tmp python3 -m pip install --user --cache-dir=/data/tmp  jupyter-core==5.5.0 jupyter-client==6.1.12 jupyter-server==1.24.0 jupyterlab-widgets==3.0.9  jupyterlab==3.6.6 jupyter_http_over_ws traitlets 
+```
+
 Then, start the notebook server:
 
 ```
+PATH="/$HOME/.local/bin:$PATH"
+
 jupyter server extension enable --py jupyter_http_over_ws
 jupyter notebook --notebook-dir=/data --NotebookApp.allow_origin='https://colab.research.google.com' --port=8888 --NotebookApp.port_retries=0
 ```

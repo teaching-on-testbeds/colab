@@ -69,13 +69,6 @@ then
 
     echo 'PATH="/usr/local/cuda-12.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"' | sudo tee /etc/environment
     
-    sudo chown $USER /data
-    mkdir -p /data/tmp
-    sudo chown $USER -R /data
-
-    TMPDIR=/data/tmp python3 -m pip install --user --cache-dir=/data/tmp Cython==3.0.5
-    TMPDIR=/data/tmp python3 -m pip install --user --cache-dir=/data/tmp -r /local/repository/requirements_cloudlab_dl22.txt --extra-index-url https://download.pytorch.org/whl/cu118 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
-    TMPDIR=/data/tmp python3 -m pip install --user --cache-dir=/data/tmp  jupyter-core jupyter-client jupyter_http_over_ws traitlets -U --force-reinstall
 
   fi
 fi
