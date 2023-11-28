@@ -16,8 +16,8 @@ request = pc.makeRequestRSpec()
 
 # Pick your OS.
 imageList = [
-    ('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD', 'UBUNTU 20.04'),
-    ('urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS8S-64-STD',  'CENTOS 8 Stream')]
+    ('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU22-64-STD', 'UBUNTU 22.04'),
+    ('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD', 'UBUNTU 20.04')]
 
 pc.defineParameter("osImage", "Select OS image",
                    portal.ParameterType.IMAGE,
@@ -70,6 +70,8 @@ pc.verifyParameters()
 
 ubuntuInstructions = """
 
+The automated install process, which installs GPU drivers, CUDA, and some machine learning libraries, will take a while.
+
 After the automated install process is complete (you should see a check mark in the corner of the node), reboot the node to load the newly installed driver:
 
 ```
@@ -99,7 +101,7 @@ Then, start the notebook server:
 ```
 PATH="/data/bin:$PATH"
 cd /data
-PYTHONPATH=/data jupyter serverextension enable --py jupyter_http_over_ws
+PYTHONPATH=/data jupyter server extension enable --py jupyter_http_over_ws
 PYTHONPATH=/data jupyter notebook --notebook-dir=/data --NotebookApp.allow_origin='https://colab.research.google.com' --port=8888 --NotebookApp.port_retries=0
 ```
 
@@ -119,9 +121,57 @@ ssh -L 127.0.0.1:8888:127.0.0.1:8888 USER@{host-colab}
 
 (substituting your CloudLab username in place of `USER`! Also specify your key path using `-i`, if it is not in the default location.) Leave this SSH session open.
 
-Now, you can open Colab in a browser. Click on the drop-down menu for "Connect" in the top right and select "Connect to a local runtime". Past the URL into the space and click "Connect".
+Now, you can open Colab in a browser. Click on the drop-down menu for "Connect" in the top right and select "Connect to a local runtime". Paste the URL into the space and click "Connect".
 
 """
+
+ubuntu22Instructions = """
+
+The automated install process, which installs GPU drivers, CUDA, and some machine learning libraries, will take a while.
+
+After the automated install process is complete (you should see a check mark in the corner of the node), reboot the node to load the newly installed driver:
+
+```
+sudo reboot
+```
+
+Wait for the resource to come back up.
+
+This host has a large filesystem available at `/data` - run
+
+```
+sudo chown $USER /data
+```
+
+so that you will be able to write to this filesystem. 
+
+Then, start the notebook server:
+
+```
+jupyter server extension enable --py jupyter_http_over_ws
+jupyter notebook --notebook-dir=/data --NotebookApp.allow_origin='https://colab.research.google.com' --port=8888 --NotebookApp.port_retries=0
+```
+
+In the output, look for a URL in this format:
+    
+```
+http://localhost:8888/?token=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+and copy it.
+
+Then, from List View, get the SSH login details for the server. In a local terminal, run:
+
+```
+ssh -L 127.0.0.1:8888:127.0.0.1:8888 USER@{host-colab}
+```
+
+(substituting your CloudLab username in place of `USER`! Also specify your key path using `-i`, if it is not in the default location.) Leave this SSH session open.
+
+Now, you can open Colab in a browser. Click on the drop-down menu for "Connect" in the top right and select "Connect to a local runtime". Paste the URL into the space and click "Connect".
+
+"""
+
 
 centosInstructions = ubuntuInstructions
 
@@ -151,9 +201,9 @@ if params.tempFileSystemSize > 0 or params.tempFileSystemMax:
 if params.osImage and params.osImage.endswith('UBUNTU20-64-STD'):
     node.addService(pg.Execute(shell="bash", command="/bin/bash /local/repository/cloudlab-ubuntu-install.sh"))
     tourInstructions = ubuntuInstructions
-elif params.osImage and params.osImage.endswith('CENTOS8S-64-STD'):
-    node.addService(pg.Execute(shell="bash", command="/bin/bash /local/repository/cloudlab-centos-install.sh"))
-    tourInstructions = centosInstructions
+elif params.osImage and params.osImage.endswith('UBUNTU22-64-STD'):
+    node.addService(pg.Execute(shell="bash", command="/bin/bash /local/repository/cloudlab-ubuntu-install.sh"))
+    tourInstructions = ubuntu22Instructions
 else:
   tourInstructions = ""
 
