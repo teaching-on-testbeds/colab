@@ -57,8 +57,7 @@ then
     sudo apt update
     sudo apt-get clean
     sudo apt -y install linux-headers-$(uname -r)
-    sudo apt-mark hold nvidia-driver-535 # don't allow these
-    sudo apt -y install nvidia-driver-525
+    sudo apt -y install nvidia-driver-545
     sudo apt-get clean
     sudo apt -y install cuda-12-2 cuda-runtime-12-2 cuda-drivers=545.23.08-1
     sudo apt-get clean
@@ -69,7 +68,6 @@ then
 
     echo 'PATH="/usr/local/cuda-12.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"' | sudo tee /etc/environment
     
-
   fi
 fi
 
