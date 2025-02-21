@@ -1,0 +1,23 @@
+FROM quay.io/jupyter/scipy-notebook
+
+ARG ROCM_VERSION=6.3
+ARG AMDGPU_VERSION=6.3.60300
+
+USER root
+RUN wget https://repo.radeon.com/amdgpu-install/$ROCM_VERSION/ubuntu/noble/amdgpu-install_$AMDGPU_VERSION-1_all.deb &&  \
+    apt-get update --yes && \
+    apt-get install --yes ./amdgpu-install_$AMDGPU_VERSION-1_all.deb  
+
+RUN amdgpu-install --usecase=rocm -y && rm *.deb  
+
+USER ${NB_UID}
+
+RUN pip install --pre --no-cache-dir  --index-url https://download.pytorch.org/whl/nightly/rocm6.3/ \
+    'torch' \
+    'torchaudio' \
+    'torchvision' && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+# Adjust final path
+ENV PATH="/opt/venv/bin:$PATH:/opt/rocm/bin/" 
